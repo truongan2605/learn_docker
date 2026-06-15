@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { useState } from 'react';
 import Landing from './pages/Landing';
 import Shop from './pages/Shop';
 import Admin from './pages/Admin';
