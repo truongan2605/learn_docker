@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: vp-silk-mysql
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_DATABASE=vp_silk_db
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_USER=silkuser
+      - MYSQL_PASSWORD=silkpassword
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: vp-silk-pma
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+    depends_on:
+      - db
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: vp-silk-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=silkuser
+      - DB_PASSWORD=silkpassword
+      - DB_NAME=vp_silk_db
+      - JWT_SECRET=supersecretjwtkey
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: vp-silk-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
