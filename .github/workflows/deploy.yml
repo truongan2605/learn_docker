@@ -1,0 +1,26 @@
+name: Deploy to Server
+
+# Chỉ chạy quy trình này khi có code được đẩy lên nhánh "main"
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Ở đây sau này bạn sẽ viết các bước thực tế:
+      # 1. SSH vào Server (VPS)
+      # 2. Chạy git pull để lấy code mới nhất về Server
+      # 3. Chạy docker-compose down && docker-compose up --build -d
+      
+      - name: Deploy Simulation
+        run: |
+          echo "Bắt đầu quy trình Deploy lên Server..."
+          echo "Vì đây là nhánh 'main' nên code này sẽ được cập nhật lên Production!"
+          echo "Deploy thành công!"
