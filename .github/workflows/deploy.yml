@@ -19,8 +19,28 @@ jobs:
       # 2. Chạy git pull để lấy code mới nhất về Server
       # 3. Chạy docker-compose down && docker-compose up --build -d
       
-      - name: Deploy Simulation
-        run: |
-          echo "Bắt đầu quy trình Deploy lên Server..."
-          echo "Vì đây là nhánh 'main' nên code này sẽ được cập nhật lên Production!"
-          echo "Deploy thành công!"
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            # 1. Tự động Clone nếu chưa có code, hoặc Pull nếu đã có
+            if [ ! -d "/root/app_node_2" ]; then
+              echo "Thư mục chưa tồn tại. Bắt đầu clone dự án lần đầu tiên..."
+              cd /root
+              git clone https://github.com/${{ github.repository }}.git app_node_2
+              cd app_node_2
+            else
+              echo "Thư mục đã tồn tại. Tiến hành cập nhật code mới nhất..."
+              cd /root/app_node_2
+              git pull origin main
+            fi
+            
+            # 3. Build lại image và chạy ngầm (nếu có thay đổi)
+            docker-compose down
+            docker-compose up --build -d
+            
+            # Xoá các image rác để tránh đầy ổ cứng
+            docker image prune -f
