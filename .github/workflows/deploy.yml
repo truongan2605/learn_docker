@@ -39,8 +39,8 @@ jobs:
             fi
             
             # 3. Build lại image và chạy ngầm (nếu có thay đổi)
-            docker-compose down
-            docker-compose up --build -d
+            docker compose down
+            docker compose up --build -d
             
             # Xoá các image rác để tránh đầy ổ cứng
             docker image prune -f
