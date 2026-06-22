@@ -19,7 +19,7 @@ services:
     image: phpmyadmin/phpmyadmin
     container_name: vp-silk-pma
     ports:
-      - "8081:80"
+      - "127.0.0.1:8081:80"  # Chỉ truy cập từ localhost, KHÔNG ra ngoài Internet
     environment:
       - PMA_HOST=db
       - PMA_PORT=3306
@@ -31,8 +31,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: vp-silk-backend
-    ports:
-      - "5000:5000"
+    expose:
+      - "5000"  # Chỉ mở nội bộ trong Docker network, KHÔNG ra ngoài Internet
     environment:
       - PORT=5000
       - DB_HOST=db
